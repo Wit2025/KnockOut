@@ -1,0 +1,415 @@
+import 'package:flutter/material.dart';
+import 'package:knockout/Widgets/AppColors.dart';
+import 'package:knockout/Screens/ServiceSelectionPage.dart';
+import 'package:knockout/Screens/ConfirmOrderPage.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+
+class QRScannerScreen extends StatefulWidget {
+  final String? selectedService;
+  final double? selectedPrice;
+
+  const QRScannerScreen({super.key, this.selectedService, this.selectedPrice});
+
+  @override
+  State<QRScannerScreen> createState() => _QRScannerScreenState();
+}
+
+class _QRScannerScreenState extends State<QRScannerScreen> {
+  MobileScannerController? cameraController;
+  bool isScanCompleted = false;
+  bool _torchEnabled = false;
+  CameraFacing _cameraFacing = CameraFacing.back;
+  bool _cameraInitialized = false;
+  String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    try {
+      cameraController = MobileScannerController();
+      setState(() {
+        _cameraInitialized = true;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'ไม่สามารถเริ่มต้นกล้องได้: $e';
+      });
+    }
+  }
+
+  // ฟังก์ชันสำหรับสลับไฟฉาย
+  Future<void> _toggleTorch() async {
+    if (cameraController == null) return;
+
+    try {
+      await cameraController!.toggleTorch();
+      setState(() {
+        _torchEnabled = !_torchEnabled;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'ไม่สามารถเปิดไฟฉายได้: $e';
+      });
+    }
+  }
+
+  // ฟังก์ชันสำหรับสลับกล้อง
+  Future<void> _switchCamera() async {
+    if (cameraController == null) return;
+
+    try {
+      await cameraController!.switchCamera();
+      setState(() {
+        _cameraFacing = _cameraFacing == CameraFacing.back
+            ? CameraFacing.front
+            : CameraFacing.back;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'ไม่สามารถสลับกล้องได้: $e';
+      });
+    }
+  }
+
+  void _goToNextPage() {
+    // If a service was selected from HomePage, go directly to OrderSummaryPage
+    if (widget.selectedService != null && widget.selectedPrice != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OrderSummaryPage(
+            serviceData: {
+              'service': widget.selectedService,
+              'time': 8,
+              'price': widget.selectedPrice,
+            },
+          ),
+        ),
+      );
+    } else {
+      // Otherwise go to ServiceSelectionPage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ServiceSelectionPage(selectedService: widget.selectedService),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    cameraController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_errorMessage.isNotEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('ເກີດຂໍ້ຜິດພາດ'),
+          backgroundColor: AppColors.error,
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: AppColors.error,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  _errorMessage,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('ຍ້ອນກັບ'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (!_cameraInitialized) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: Colors.white),
+              SizedBox(height: 20),
+              Text(
+                'ກຳລັງກຽມກ້ອງ...',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: AppColors.textColor,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.backgroundColor,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'ສະແກນ QR Code',
+          style: TextStyle(color: AppColors.backgroundColor),
+        ),
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        actions: [
+          // ปุ่มเปิด/ปิดไฟฉาย
+          IconButton(
+            color: AppColors.backgroundColor,
+            icon: _torchEnabled
+                ? const Icon(Icons.flash_on, color: AppColors.warning)
+                : const Icon(Icons.flash_off, color: AppColors.borderColor),
+            iconSize: 32.0,
+            onPressed: _toggleTorch,
+          ),
+          // ปุ่มสลับกล้อง
+          IconButton(
+            color: AppColors.backgroundColor,
+            icon: _cameraFacing == CameraFacing.front
+                ? const Icon(Icons.camera_front)
+                : const Icon(Icons.camera_rear),
+            iconSize: 32.0,
+            onPressed: _switchCamera,
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          MobileScanner(
+            controller: cameraController!,
+            onDetect: (capture) {
+              if (!isScanCompleted) {
+                final List<Barcode> barcodes = capture.barcodes;
+                for (final barcode in barcodes) {
+                  if (barcode.rawValue != null) {
+                    isScanCompleted = true;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('ສະແກນສຳເລັດ: ${barcode.rawValue}'),
+                        backgroundColor: AppColors.success,
+                      ),
+                    );
+
+                    Future.delayed(const Duration(seconds: 1), () {
+                      _goToNextPage();
+                    });
+
+                    break;
+                  }
+                }
+              }
+            },
+          ),
+          // Overlay สำหรับช่วยเล็ง
+          const ScannerOverlay(),
+
+          // ข้อความแนะนำ
+          Positioned(
+            top: 20,
+            left: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.qr_code_scanner, color: Colors.white, size: 32),
+                  SizedBox(height: 8),
+                  Text(
+                    'ວາງ QR Code ໃນຂອບ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    'ເພື່ອເຊື່ອກັບຕູ້ລ້າງ',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // ปุ่มข้ามไปหน้าบริการ (ทดสอบ)
+          Positioned(
+            bottom: 40,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton.icon(
+                onPressed: _goToNextPage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.mainButton,
+                  foregroundColor: AppColors.backgroundColor,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 15,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+                icon: const Icon(Icons.arrow_forward),
+                label: Text(
+                  'ດຳເນີນຕໍ່ໄປ',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Overlay สำหรับช่วยเล็ง QR Code
+class ScannerOverlay extends StatelessWidget {
+  const ScannerOverlay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: ScannerOverlayPainter(),
+      child: const Center(
+        child: SizedBox(
+          width: 250,
+          height: 250,
+          child: Icon(
+            Icons.qr_code_scanner,
+            size: 200,
+            color: Colors.transparent,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ScannerOverlayPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final width = size.width;
+    final height = size.height;
+
+    final backgroundPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = AppColors.textColor.withOpacity(0.5);
+
+    // วาดพื้นหลังทึบรอบๆ
+    final path = Path()..addRect(Rect.fromLTRB(0, 0, width, height));
+
+    // ตัดส่วนกลางออก
+    final centerRect = Rect.fromCenter(
+      center: Offset(width / 2, height / 2),
+      width: 250,
+      height: 250,
+    );
+    path.addRect(centerRect);
+    path.fillType = PathFillType.evenOdd;
+
+    canvas.drawPath(path, backgroundPaint);
+
+    // วาดมุมของกรอบ
+    final cornerPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..color = AppColors.mainButton;
+
+    const cornerLength = 20.0;
+    final topLeft = centerRect.topLeft;
+    final topRight = centerRect.topRight;
+    final bottomLeft = centerRect.bottomLeft;
+    final bottomRight = centerRect.bottomRight;
+
+    // มุมบนซ้าย
+    canvas.drawLine(
+      topLeft,
+      Offset(topLeft.dx + cornerLength, topLeft.dy),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      topLeft,
+      Offset(topLeft.dx, topLeft.dy + cornerLength),
+      cornerPaint,
+    );
+
+    // มุมบนขวา
+    canvas.drawLine(
+      topRight,
+      Offset(topRight.dx - cornerLength, topRight.dy),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      topRight,
+      Offset(topRight.dx, topRight.dy + cornerLength),
+      cornerPaint,
+    );
+
+    // มุมล่างซ้าย
+    canvas.drawLine(
+      bottomLeft,
+      Offset(bottomLeft.dx + cornerLength, bottomLeft.dy),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      bottomLeft,
+      Offset(bottomLeft.dx, bottomLeft.dy - cornerLength),
+      cornerPaint,
+    );
+
+    // มุมล่างขวา
+    canvas.drawLine(
+      bottomRight,
+      Offset(bottomRight.dx - cornerLength, bottomRight.dy),
+      cornerPaint,
+    );
+    canvas.drawLine(
+      bottomRight,
+      Offset(bottomRight.dx, bottomRight.dy - cornerLength),
+      cornerPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}
