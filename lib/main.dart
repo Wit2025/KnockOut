@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knockout/Log/forgotPwd.dart';
-import 'package:knockout/Home/Pages/ScanQR/SleectMenu/ServiceSelectionPage.dart';
+import 'package:knockout/Home/Pages/ScanQR/SelectMenu/ServiceSelectionPage.dart';
 import 'package:knockout/Home/Pages/Profiles/Screens/Wallets/WalletPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knockout/Log/LoginPage.dart';
