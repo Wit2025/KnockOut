@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:knockout/Home/Pages/ScanQR/Widgets/CameraErrorWidget.dart';
+import 'package:knockout/Home/Pages/ScanQR/Widgets/CameraLoadingWidget.dart';
+import 'package:knockout/Home/Pages/ScanQR/Widgets/ScannerOverlay.dart';
 import 'package:knockout/Widgets/AppColors.dart';
-import 'package:knockout/Home/Pages/ScanQR/SleectMenu/ServiceSelectionPage.dart';
-import 'package:knockout/Home/Pages/ScanQR/SleectMenu/ConfirmOrder/ConfirmOrderPage.dart';
+import 'package:knockout/Home/Pages/ScanQR/SelectMenu/ServiceSelectionPage.dart';
+import 'package:knockout/Home/Pages/ScanQR/SelectMenu/ConfirmOrder/ConfirmOrderPage.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRScannerScreen extends StatefulWidget {
@@ -111,57 +114,14 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
   @override
   Widget build(BuildContext context) {
     if (_errorMessage.isNotEmpty) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('ເກີດຂໍ້ຜິດພາດ'),
-          backgroundColor: AppColors.error,
-        ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: AppColors.error,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  _errorMessage,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('ຍ້ອນກັບ'),
-                ),
-              ],
-            ),
-          ),
-        ),
+      return CameraErrorWidget(
+        errorMessage: _errorMessage,
+        onBackPressed: () => Navigator.pop(context),
       );
     }
 
     if (!_cameraInitialized) {
-      return Scaffold(
-        backgroundColor: Colors.black,
-        body: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(color: Colors.white),
-              SizedBox(height: 20),
-              Text(
-                'ກຳລັງກຽມກ້ອງ...',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-            ],
-          ),
-        ),
-      );
+      return const CameraLoadingWidget();
     }
 
     return Scaffold(
@@ -287,126 +247,12 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                   ),
                 ),
                 icon: const Icon(Icons.arrow_circle_right_outlined, size: 25),
-                label: Text('ຕໍ່ໄປ', style: const TextStyle(fontSize: 18)),
+                label: const Text('ຕໍ່ໄປ', style: TextStyle(fontSize: 18)),
               ),
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-// Overlay สำหรับช่วยเล็ง QR Code
-class ScannerOverlay extends StatelessWidget {
-  const ScannerOverlay({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: ScannerOverlayPainter(),
-      child: const Center(
-        child: SizedBox(
-          width: 250,
-          height: 250,
-          child: Icon(
-            Icons.qr_code_scanner,
-            size: 200,
-            color: Colors.transparent,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ScannerOverlayPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final width = size.width;
-    final height = size.height;
-
-    final backgroundPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = AppColors.textColor.withOpacity(0.5);
-
-    // วาดพื้นหลังทึบรอบๆ
-    final path = Path()..addRect(Rect.fromLTRB(0, 0, width, height));
-
-    // ตัดส่วนกลางออก
-    final centerRect = Rect.fromCenter(
-      center: Offset(width / 2, height / 2),
-      width: 250,
-      height: 250,
-    );
-    path.addRect(centerRect);
-    path.fillType = PathFillType.evenOdd;
-
-    canvas.drawPath(path, backgroundPaint);
-
-    // วาดมุมของกรอบ
-    final cornerPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..color = AppColors.mainButton;
-
-    const cornerLength = 20.0;
-    final topLeft = centerRect.topLeft;
-    final topRight = centerRect.topRight;
-    final bottomLeft = centerRect.bottomLeft;
-    final bottomRight = centerRect.bottomRight;
-
-    // มุมบนซ้าย
-    canvas.drawLine(
-      topLeft,
-      Offset(topLeft.dx + cornerLength, topLeft.dy),
-      cornerPaint,
-    );
-    canvas.drawLine(
-      topLeft,
-      Offset(topLeft.dx, topLeft.dy + cornerLength),
-      cornerPaint,
-    );
-
-    // มุมบนขวา
-    canvas.drawLine(
-      topRight,
-      Offset(topRight.dx - cornerLength, topRight.dy),
-      cornerPaint,
-    );
-    canvas.drawLine(
-      topRight,
-      Offset(topRight.dx, topRight.dy + cornerLength),
-      cornerPaint,
-    );
-
-    // มุมล่างซ้าย
-    canvas.drawLine(
-      bottomLeft,
-      Offset(bottomLeft.dx + cornerLength, bottomLeft.dy),
-      cornerPaint,
-    );
-    canvas.drawLine(
-      bottomLeft,
-      Offset(bottomLeft.dx, bottomLeft.dy - cornerLength),
-      cornerPaint,
-    );
-
-    // มุมล่างขวา
-    canvas.drawLine(
-      bottomRight,
-      Offset(bottomRight.dx - cornerLength, bottomRight.dy),
-      cornerPaint,
-    );
-    canvas.drawLine(
-      bottomRight,
-      Offset(bottomRight.dx, bottomRight.dy - cornerLength),
-      cornerPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
   }
 }
