@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knockout/Widgets/AppColors.dart';
-import 'package:knockout/Screens/ServiceSelectionPage.dart';
-import 'package:knockout/Screens/ConfirmOrderPage.dart';
+import 'package:knockout/Home/Pages/ScanQR/SleectMenu/ServiceSelectionPage.dart';
+import 'package:knockout/Home/Pages/ScanQR/SleectMenu/ConfirmOrder/ConfirmOrderPage.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRScannerScreen extends StatefulWidget {
@@ -286,11 +286,8 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                icon: const Icon(Icons.arrow_forward),
-                label: Text(
-                  'ດຳເນີນຕໍ່ໄປ',
-                  style: const TextStyle(fontSize: 18),
-                ),
+                icon: const Icon(Icons.arrow_circle_right_outlined, size: 25),
+                label: Text('ຕໍ່ໄປ', style: const TextStyle(fontSize: 18)),
               ),
             ),
           ),

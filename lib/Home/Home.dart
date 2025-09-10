@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:knockout/Screens/HistoryPage.dart';
-import 'package:knockout/Screens/HomePage.dart';
-import 'package:knockout/Screens/Profile/ProfilePage.dart';
-import 'package:knockout/Screens/ScanQRCodePage.dart';
-import 'package:knockout/Screens/TrackingPage.dart';
+import 'package:knockout/Home/Pages/Histories/HistoryPage.dart';
+import 'package:knockout/Home/Pages/MainPages/MainPage.dart';
+import 'package:knockout/Home/Pages/Profiles/ProfilePage.dart';
+import 'package:knockout/Home/Pages/ScanQR/ScanQRCodePage.dart';
+import 'package:knockout/Home/Pages/TrackingStatus/TrackingPage.dart';
 import 'package:knockout/Widgets/AppBar.dart';
 import 'package:knockout/Widgets/AppColors.dart';
 
@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
   }
 
   final List<Widget> _pages = [
-    HomePage(),
+    MainPage(),
     RealtimeTrackingPage(),
     QRScannerScreen(),
     HistoryPage(),
@@ -78,20 +78,17 @@ class _HomeState extends State<Home> {
                       icon: Icons.home_outlined,
                       label: 'ໜ້າຫຼັກ',
                     ),
-                    // สถานะ
                     _buildNavItem(
                       index: 1,
                       icon: Icons.schedule,
                       label: 'ສະຖານະ',
                     ),
-                    SizedBox(width: 48), // เว้นตรงกลางให้ปุ่ม Scan
-                    // ประวัติ
+                    SizedBox(width: 48),
                     _buildNavItem(
                       index: 3,
                       icon: Icons.history,
                       label: 'ປະຫວັດ',
                     ),
-                    // โปรไฟล์
                     _buildNavItem(
                       index: 4,
                       icon: Icons.person_2_outlined,
@@ -131,6 +128,10 @@ class _HomeState extends State<Home> {
           },
           backgroundColor: Colors.transparent,
           elevation: 0,
+          highlightElevation: 0,
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
           child: Icon(
             Icons.qr_code_scanner,
             size: 40,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:knockout/Screens/Profile/Support/SupportPage.dart';
-import 'package:knockout/Screens/WalletPage.dart';
+import 'package:knockout/Home/Pages/Profiles/Screens/ChangePassword/ChangePassword.dart';
+import 'package:knockout/Home/Pages/Profiles/Screens/Support/SupportPage.dart';
+import 'package:knockout/Home/Pages/Profiles/Screens/TermCondition/TermCondition.dart';
+import 'package:knockout/Home/Pages/Profiles/Screens/Wallets/WalletPage.dart';
 import 'package:knockout/Widgets/AppColors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,10 +16,10 @@ class _ProfilePageState extends State<ProfilePage> {
     'name': 'ຍ້ອຍສະຫວັນ ສີລິມຸງຄຸນ',
     'email': 'yoisavanh@email.com',
     'phone': '08X-XXX-XXXX',
-    'points': 125,
+    'points': 35,
     'level': 'Silver',
     'memberSince': 'ມີນາ 2024',
-    'totalServices': 15,
+    'totalServices': 2,
   };
 
   @override
@@ -33,7 +35,9 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.mainButton, AppColors.subButton],
+                  colors: [AppColors.mainButton, AppColors.mainButton],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
@@ -49,14 +53,30 @@ class _ProfilePageState extends State<ProfilePage> {
                   // Profile Picture
                   Stack(
                     children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: AppColors.backgroundColor,
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.backgroundColor,
+                              AppColors.backgroundColor.withOpacity(0.8),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
                         child: CircleAvatar(
                           radius: 45,
-                          backgroundColor: AppColors.mainButton.withOpacity(
-                            0.1,
-                          ),
+                          backgroundColor: Colors.transparent,
                           child: Icon(
                             Icons.person,
                             size: 50,
@@ -72,7 +92,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 32,
                           decoration: BoxDecoration(
                             color: AppColors.backgroundColor,
-                            borderRadius: BorderRadius.circular(16),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: IconButton(
                             icon: Icon(
@@ -101,10 +128,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(height: 8),
 
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: AppColors.backgroundColor.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: AppColors.backgroundColor.withOpacity(0.3),
+                        width: 1,
+                      ),
                     ),
                     child: Text(
                       'ສະມາຊິກ ${userProfile['level']}',
@@ -117,38 +148,39 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 24),
 
-                  // Stats Row
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildStatColumn(
-                          'ແຕ້ມສະສົມ',
+                  // Stats Row - แบบใหม่
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.backgroundColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.backgroundColor.withOpacity(0.2),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildStatItem(
+                          Icons.star,
                           '${userProfile['points']}',
+                          'ແຕ້ມສະສົມ',
                         ),
-                      ),
-                      Container(
-                        width: 1,
-                        height: 40,
-                        color: AppColors.backgroundColor.withOpacity(0.3),
-                      ),
-                      Expanded(
-                        child: _buildStatColumn(
-                          'ໃຊ້ບໍລິການ',
-                          '${userProfile['totalServices']} ຄັ້ງ',
+                        _buildDivider(),
+                        _buildStatItem(
+                          Icons.local_laundry_service,
+                          '${userProfile['totalServices']}',
+                          'ບໍລິການ',
                         ),
-                      ),
-                      Container(
-                        width: 1,
-                        height: 40,
-                        color: AppColors.backgroundColor.withOpacity(0.3),
-                      ),
-                      Expanded(
-                        child: _buildStatColumn(
-                          'ເປັນສະມາຊິກຕັ້ງແຕ່',
+                        _buildDivider(),
+                        _buildStatItem(
+                          Icons.calendar_today,
+                          '',
                           userProfile['memberSince'],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -174,17 +206,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
 
                   _buildMenuItem(
-                    'ຄູປອງ ແລະ ສ່ວນຫຼຸດ',
-                    'ເບິ່ງຄູປອງທີ່ມີ ແລະ ໃຊ້ແຕ້ມແລກ',
-                    Icons.local_offer_outlined,
-                    () => _showCoupons(),
-                  ),
-
-                  _buildMenuItem(
-                    'ພາສາ',
-                    'ປ່ຽນພາສາ',
-                    Icons.language_outlined,
-                    () => _languageSettings(),
+                    'ລະຫັດຜ່ານ',
+                    'ປ່ຽນລະຫັດຜ່ານ',
+                    Icons.key_outlined,
+                    () => _passwordSettings(),
                   ),
 
                   _buildMenuItem(
@@ -256,24 +281,62 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildStatColumn(String title, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: AppColors.backgroundColor,
+  Widget _buildStatItem(IconData icon, String value, String label) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppColors.backgroundColor.withOpacity(0.3),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 20, color: AppColors.backgroundColor),
           ),
+          SizedBox(height: 8),
+          if (value.isNotEmpty)
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.backgroundColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.backgroundColor.withOpacity(0.8),
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      width: 1,
+      height: 40,
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.transparent,
+            AppColors.backgroundColor.withOpacity(0.3),
+            Colors.transparent,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        SizedBox(height: 4),
-        Text(
-          title,
-          style: TextStyle(fontSize: 12, color: AppColors.textColor),
-          textAlign: TextAlign.center,
-        ),
-      ],
+      ),
     );
   }
 
@@ -300,6 +363,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 offset: Offset(0, 2),
               ),
             ],
+            border: Border.all(
+              color: AppColors.borderColor.withOpacity(0.1),
+              width: 1,
+            ),
           ),
           child: Row(
             children: [
@@ -307,7 +374,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.mainButton.withOpacity(0.1),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.mainButton.withOpacity(0.1),
+                      AppColors.iconSelect.withOpacity(0.1),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: AppColors.mainButton, size: 24),
@@ -336,10 +410,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.iconUnselect,
-                size: 16,
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppColors.mainButton.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  color: AppColors.mainButton,
+                  size: 16,
+                ),
               ),
             ],
           ),
@@ -368,7 +450,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundColor,
+                    color: AppColors.borderColor,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -446,7 +528,7 @@ class _ProfilePageState extends State<ProfilePage> {
             fillColor: AppColors.backgroundColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.backgroundColor),
+              borderSide: BorderSide(color: AppColors.borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -465,25 +547,18 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _showCoupons() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => CouponsPage()),
-    // );
-  }
-
-  void _languageSettings() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => LanguageSettingsPage()),
-    // );
+  void _passwordSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+    );
   }
 
   void _showTermsAndConditions() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
+    );
   }
 
   void _showLogoutDialog() async {

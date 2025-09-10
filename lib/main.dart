@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:knockout/Log/forgotPwd.dart';
-import 'package:knockout/Screens/ServiceSelectionPage.dart';
+import 'package:knockout/Home/Pages/ScanQR/SleectMenu/ServiceSelectionPage.dart';
+import 'package:knockout/Home/Pages/Profiles/Screens/Wallets/WalletPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:knockout/Log/LoginPage.dart';
-import 'package:knockout/Screens/Home.dart';
-import 'package:knockout/Screens/WellcomePage.dart';
-import 'package:knockout/Screens/HistoryPage.dart';
-import 'package:knockout/Screens/Profile/ProfilePage.dart';
-import 'package:knockout/Screens/ScanQRCodePage.dart';
-import 'package:knockout/Screens/TrackingPage.dart';
-import 'package:knockout/Screens/WalletPage.dart';
+import 'package:knockout/Home/Home.dart';
+import 'package:knockout/Log/WellcomePage.dart';
+import 'package:knockout/Home/Pages/Histories/HistoryPage.dart';
+import 'package:knockout/Home/Pages/Profiles/ProfilePage.dart';
+import 'package:knockout/Home/Pages/ScanQR/ScanQRCodePage.dart';
+import 'package:knockout/Home/Pages/TrackingStatus/TrackingPage.dart';
 import 'package:knockout/Log/RegisterPage.dart';
 
 void main() async {

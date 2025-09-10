@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:knockout/Screens/Home.dart';
+import 'package:knockout/Home/Home.dart';
 import 'package:knockout/Widgets/AppColors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

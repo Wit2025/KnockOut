@@ -11,9 +11,9 @@ class WelcomePage extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
+              AppColors.mainButton,
               AppColors.darkButton,
               AppColors.mainButton,
-              AppColors.third,
             ],
           ),
         ),
@@ -25,27 +25,37 @@ class WelcomePage extends StatelessWidget {
               children: [
                 // Logo
                 Container(
-                  width: 100,
-                  height: 100,
+                  width: 120,
+                  height: 120,
                   decoration: BoxDecoration(
+                    shape: BoxShape.circle,
                     gradient: LinearGradient(
-                      colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)],
+                      colors: [
+                        AppColors.backgroundColor.withOpacity(0.9),
+                        AppColors.backgroundColor.withOpacity(0.7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
+                        color: Colors.black.withOpacity(0.25),
+                        blurRadius: 12,
+                        offset: Offset(0, 6),
                       ),
                     ],
                   ),
-                  child: Icon(
-                    Icons.security,
-                    size: 50,
-                    color: AppColors.backgroundColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 24),
                 Text(
                   'Knock Out',
@@ -72,7 +82,7 @@ class WelcomePage extends StatelessWidget {
                   height: 56,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/login'); // ใช้ named route
+                      Navigator.pushNamed(context, '/login');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.backgroundColor,
@@ -99,10 +109,7 @@ class WelcomePage extends StatelessWidget {
                   height: 56,
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/register',
-                      ); // ใช้ named route
+                      Navigator.pushNamed(context, '/register');
                     },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.backgroundColor,
@@ -128,7 +135,10 @@ class WelcomePage extends StatelessWidget {
                 // Social Login
                 Text(
                   'ຫຼື ເຂົ້າສູ່ລະບົບດ້ວຍ',
-                  style: TextStyle(color: AppColors.textColor),
+                  style: TextStyle(
+                    color: AppColors.backgroundColor,
+                    fontSize: 16,
+                  ),
                 ),
                 SizedBox(height: 16),
                 Row(
@@ -175,7 +185,7 @@ class WelcomePage extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
-          foregroundColor: textColor, // ใช้ textColor ที่ส่งมา
+          foregroundColor: textColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -189,9 +199,9 @@ class WelcomePage extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontSize: 20, // ลดขนาดฟอนต์จาก 20 เป็น 14
+                fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: textColor, // ใช้ textColor ที่ส่งมา
+                color: textColor,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
