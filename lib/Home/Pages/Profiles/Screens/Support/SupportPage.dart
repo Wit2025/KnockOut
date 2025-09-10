@@ -176,9 +176,9 @@ class _SupportPageState extends State<SupportPage>
         ),
         bottom: TabBar(
           controller: _tabController,
-          labelColor: AppColors.backgroundColor,
-          unselectedLabelColor: AppColors.backgroundColor,
-          indicatorColor: AppColors.backgroundColor,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: [
             Tab(text: 'ສາຂາ'),
             Tab(text: 'ແຊທ'),
@@ -396,7 +396,7 @@ class _SupportPageState extends State<SupportPage>
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: AppColors.textColor.withOpacity(0.1),
               blurRadius: 10,
               offset: Offset(0, 5),
             ),
@@ -581,7 +581,7 @@ class _SupportPageState extends State<SupportPage>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: AppColors.textColor.withOpacity(0.1),
                     blurRadius: 5,
                     offset: Offset(0, 2),
                   ),

@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:knockout/Screens/Profile/Support/SupportPage.dart';
-import 'package:knockout/Screens/ScanQRCodePage.dart';
+import 'package:knockout/Home/Pages/MainPages/Notification/Notofication.dart';
+import 'package:knockout/Home/Pages/ScanQR/ScanQRCodePage.dart';
+import 'package:knockout/Home/Pages/Profiles/Screens/Support/SupportPage.dart';
 import 'package:knockout/Widgets/AppColors.dart';
 
-class HomePage extends StatefulWidget {
+class MainPage extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF9FAFB),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Header
               Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [AppColors.darkButton, AppColors.mainButton],
+                    colors: [AppColors.mainButton, AppColors.mainButton],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -31,39 +31,59 @@ class _HomePageState extends State<HomePage> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 12,
-                      offset: const Offset(0, 5),
+                      color: AppColors.textColor.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
                 padding: const EdgeInsets.fromLTRB(24, 40, 24, 30),
                 child: Column(
                   children: [
-                    // Header Row
+                    // Header Row - ส่วนที่ปรับปรุง
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 60,
-                          height: 60,
+                          width: 65,
+                          height: 65,
                           decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Colors.white, Color(0xFFE0E7FF)],
-                            ),
                             shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.backgroundColor.withOpacity(0.5),
+                              width: 2,
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
-                                blurRadius: 8,
+                                color: AppColors.textColor.withOpacity(0.2),
+                                blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.person,
-                            color: Color(0xFF3B82F6),
-                            size: 32,
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/images/p.jpg',
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        AppColors.backgroundColor,
+                                        AppColors.mainButton,
+                                      ],
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.person,
+                                    color: AppColors.mainButton,
+                                    size: 32,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -71,38 +91,101 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'ສະບາຍດີ, ຍ້ອຍສະຫວັນ',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
+                              // ข้อความทักทาย - ปรับให้มีสไตล์มากขึ้น
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'ສະບາຍດີ, ',
+                                      style: TextStyle(
+                                        color: AppColors.backgroundColor
+                                            .withOpacity(0.9),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: 'ຍ້ອຍສະຫວັນ',
+                                      style: const TextStyle(
+                                        color: AppColors.backgroundColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 6),
-                              Text(
-                                'ມື້ນີ້ຊີລ້າງໝວກກັນນ໋ອກບໍ່?',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.85),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
+                              // ข้อความเสริม - ปรับให้ดูน่าสนใจ
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColors.backgroundColor.withOpacity(
+                                    0.15,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'ມື້ນີ້ຊີລ້າງໝວກກັນນ໋ອກບໍ່?',
+                                  style: TextStyle(
+                                    color: AppColors.backgroundColor
+                                        .withOpacity(0.95),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
+                        // ปุ่มการแจ้งเตือน - ปรับให้ดูทันสมัย
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
+                            color: AppColors.backgroundColor.withOpacity(0.2),
                             shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.textColor.withOpacity(0.1),
+                                blurRadius: 5,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.white,
-                              size: 26,
-                            ),
+                          child: Stack(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  // นำทางไปยังหน้า NotificationPage
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NotificationPage(),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(
+                                  Icons.notifications_outlined,
+                                  color: AppColors.backgroundColor,
+                                  size: 26,
+                                ),
+                              ),
+                              Positioned(
+                                right: 8,
+                                top: 8,
+                                child: Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.error,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -130,6 +213,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
+              // ส่วนที่เหลือของโค้ดไม่เปลี่ยนแปลง
               Padding(
                 padding: EdgeInsets.all(24),
                 child: Column(
@@ -141,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1F2937),
+                        color: AppColors.textColor,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -158,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                           'ລ້າງທຳມະດາ',
                           '10,000 ກີບ',
                           Icons.cleaning_services_outlined,
-                          Color(0xFF10B981),
+                          AppColors.mainButton,
                           context,
                           'ລ້າງທຳມະດາ',
                         ),
@@ -166,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                           'ລ້າງ Premium',
                           '20,000 ກີບ',
                           Icons.star_outline,
-                          Color(0xFFF59E0B),
+                          AppColors.warning,
                           context,
                           'ລ້າງ Premium',
                         ),
@@ -174,7 +258,7 @@ class _HomePageState extends State<HomePage> {
                           'ຂ້າເຊື້ອ',
                           '25,000 ກີບ',
                           Icons.health_and_safety,
-                          Color(0xFF8B5CF6),
+                          AppColors.third,
                           context,
                           'ຂ້າເຊື້ອ',
                         ),
@@ -182,7 +266,7 @@ class _HomePageState extends State<HomePage> {
                           'ລ້າງ + ອົບແຫ້ງ',
                           '30,000 ກີບ',
                           Icons.whatshot,
-                          Color(0xFFEF4444),
+                          AppColors.error,
                           context,
                           'ລ້າງ + ອົບແຫ້ງ',
                         ),
@@ -196,7 +280,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1F2937),
+                        color: AppColors.textColor,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -208,20 +292,20 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           _buildPromotionCard(
                             'ລ້າງ 3 ຄັ້ງ ຟຣີ 1 ຄັ້ງ',
-                            'ປະຢັດໄດ້ 60,000 ກີບ',
-                            Color(0xFFEC4899),
+                            'ປະຢັດໄດ້ 10,000 ກີບ',
+                            AppColors.darkButton,
                           ),
                           SizedBox(width: 16),
                           _buildPromotionCard(
                             'ສະມາຊິກໃໝ່ ຫຼຸດ 20%',
                             'ສຳລັບການໃຊ້ບໍລິການຄັ້ງທຳອິດ',
-                            Color(0xFF06B6D4),
+                            AppColors.mainButton,
                           ),
                           SizedBox(width: 16),
                           _buildPromotionCard(
                             'ແພັກເກັດ VIP',
                             'ລ້າງບໍ່ຈຳກັດ 30 ວັນ 300,000 ກີບ',
-                            Color(0xFF8B5CF6),
+                            AppColors.third,
                           ),
                         ],
                       ),
@@ -234,7 +318,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1F2937),
+                        color: AppColors.textColor,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -267,6 +351,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // ฟังก์ชันอื่นๆ ไม่เปลี่ยนแปลง
   Widget _buildInfoCard({
     required IconData icon,
     required String label,
@@ -279,8 +364,8 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.white.withOpacity(0.7),
-            Colors.white.withOpacity(0.7),
+            AppColors.backgroundColor.withOpacity(0.7),
+            AppColors.backgroundColor.withOpacity(0.7),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -288,7 +373,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppColors.textColor.withOpacity(0.1),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -297,7 +382,7 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 22, color: const Color(0xFF3B82F6)),
+          Icon(icon, size: 22, color: AppColors.mainButton),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,7 +392,7 @@ class _HomePageState extends State<HomePage> {
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                  color: AppColors.textColor,
                 ),
               ),
               Text(
@@ -315,7 +400,7 @@ class _HomePageState extends State<HomePage> {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: AppColors.textColor,
                 ),
               ),
             ],
@@ -350,11 +435,11 @@ class _HomePageState extends State<HomePage> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.backgroundColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: AppColors.textColor.withOpacity(0.1),
               blurRadius: 10,
               offset: Offset(0, 5),
             ),
@@ -379,7 +464,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF1F2937),
+                color: AppColors.textColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -409,12 +494,12 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.local_offer, color: Colors.white, size: 28),
+          Icon(Icons.local_offer, color: AppColors.backgroundColor, size: 28),
           SizedBox(height: 12),
           Text(
             title,
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.backgroundColor,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -422,7 +507,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 8),
           Text(
             description,
-            style: TextStyle(color: Colors.white70, fontSize: 14),
+            style: TextStyle(color: AppColors.backgroundColor, fontSize: 14),
           ),
         ],
       ),
@@ -435,11 +520,11 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.backgroundColor,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: AppColors.textColor.withOpacity(0.1),
               blurRadius: 10,
               offset: Offset(0, 5),
             ),
@@ -451,10 +536,10 @@ class _HomePageState extends State<HomePage> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Color(0xFF3B82F6).withOpacity(0.1),
+                color: AppColors.mainButton.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: Color(0xFF3B82F6), size: 20),
+              child: Icon(icon, color: AppColors.mainButton, size: 20),
             ),
             SizedBox(width: 12),
             Expanded(
@@ -463,11 +548,15 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF1F2937),
+                  color: AppColors.textColor,
                 ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: Color(0xFF9CA3AF), size: 16),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: AppColors.borderColor,
+              size: 16,
+            ),
           ],
         ),
       ),

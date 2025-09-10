@@ -253,8 +253,8 @@ class _RealtimeTrackingPageState extends State<RealtimeTrackingPage> {
           const SizedBox(height: 16),
           _buildAnimatedStepIndicator('ຕື່ມນ້ຳ', progress > 0.1, 0),
           _buildAnimatedStepIndicator('ລ້າງໝວກ', progress > 0.3, 1),
-          _buildAnimatedStepIndicator('ລ້າງນ້ຳ', progress > 0.7, 2),
-          _buildAnimatedStepIndicator('ປັ້ນແຫ້ງ', progress > 0.9, 3),
+          _buildAnimatedStepIndicator('ໄຫຼນ້ຳ', progress > 0.7, 2),
+          _buildAnimatedStepIndicator('ປັ້ນແຫ້ງ', progress > 0.99, 3),
         ],
       ),
     );
@@ -271,7 +271,7 @@ class _RealtimeTrackingPageState extends State<RealtimeTrackingPage> {
     } else if (index == 2) {
       isActive = progress > 0.3 && progress <= 0.7;
     } else if (index == 3) {
-      isActive = progress > 0.7 && progress <= 0.9;
+      isActive = progress > 0.7 && progress <= 0.99;
     }
 
     return AnimatedContainer(
@@ -281,19 +281,19 @@ class _RealtimeTrackingPageState extends State<RealtimeTrackingPage> {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isCompleted
-            ? AppColors.success.withOpacity(0.1)
+            ? AppColors.mainButton.withOpacity(0.1)
             : AppColors.borderColor.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isCompleted
-              ? AppColors.success.withOpacity(0.3)
+              ? AppColors.mainButton.withOpacity(0.3)
               : AppColors.borderColor.withOpacity(0.2),
           width: 1.5,
         ),
         boxShadow: isCompleted
             ? [
                 BoxShadow(
-                  color: AppColors.success.withOpacity(0.1),
+                  color: AppColors.mainButton.withOpacity(0.1),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -309,7 +309,7 @@ class _RealtimeTrackingPageState extends State<RealtimeTrackingPage> {
                   curve: Curves.easeOutBack,
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
-                    color: AppColors.success,
+                    color: AppColors.mainButton,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -342,7 +342,7 @@ class _RealtimeTrackingPageState extends State<RealtimeTrackingPage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: isCompleted ? FontWeight.w600 : FontWeight.normal,
-                color: isCompleted ? AppColors.success : AppColors.textColor,
+                color: isCompleted ? AppColors.mainButton : AppColors.textColor,
                 decoration: isCompleted
                     ? TextDecoration.none
                     : TextDecoration.none,
@@ -351,7 +351,7 @@ class _RealtimeTrackingPageState extends State<RealtimeTrackingPage> {
             ),
           ),
           if (isCompleted)
-            Icon(Icons.verified_rounded, color: AppColors.success, size: 20),
+            Icon(Icons.verified_rounded, color: AppColors.mainButton, size: 20),
         ],
       ),
     );
@@ -876,9 +876,9 @@ class WaterProgressPainter extends CustomPainter {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          AppColors.backgroundColor.withOpacity(0.0),
           AppColors.backgroundColor.withOpacity(0.1),
-          AppColors.backgroundColor.withOpacity(0.0),
+          AppColors.backgroundColor.withOpacity(0.1),
+          AppColors.backgroundColor.withOpacity(0.1),
         ],
         stops: [
           (waveAnimation - 0.3).clamp(0.0, 1.0),
@@ -904,11 +904,23 @@ class OuterBubblePainter extends CustomPainter {
 
   OuterBubblePainter({required this.bubbles, required this.animationValue});
 
+  final List<Color> _bubbleColors = [
+    AppColors.mainButton,
+    AppColors.iconSelect,
+    AppColors.darkButton,
+    AppColors.error,
+    AppColors.warning,
+    AppColors.borderColor,
+    AppColors.iconUnselect,
+    AppColors.backgroundColor,
+  ];
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
 
-    for (final bubble in bubbles) {
+    for (int i = 0; i < bubbles.length; i++) {
+      final bubble = bubbles[i];
       final currentAngle =
           bubble.angle + (animationValue * bubble.speed * 2 * pi);
       final currentDistance =
@@ -919,22 +931,45 @@ class OuterBubblePainter extends CustomPainter {
         center.dy + sin(currentAngle) * currentDistance,
       );
 
+      // เลือกสีจากลิสต์โดยใช้ index ของฟอง mod ด้วยจำนวนสี
+      final bubbleColor = _bubbleColors[i % _bubbleColors.length];
+
+      // เพิ่มเงาให้ฟองสบู่
+      final shadowPaint = Paint()
+        ..color = Colors.black.withOpacity(bubble.opacity * 0.3)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
+
+      canvas.drawCircle(
+        bubblePosition + const Offset(2, 2),
+        bubble.radius,
+        shadowPaint,
+      );
+
       final bubblePaint = Paint()
-        ..color = AppColors.mainButton.withOpacity(bubble.opacity)
+        ..color = bubbleColor.withOpacity(bubble.opacity)
         ..style = PaintingStyle.fill;
 
       canvas.drawCircle(bubblePosition, bubble.radius, bubblePaint);
 
-      // Bubble highlight
+      // Bubble highlight - ทำให้เห็นชัดขึ้นบนพื้นหลังสีขาว
       final highlightPaint = Paint()
-        ..color = AppColors.backgroundColor.withOpacity(bubble.opacity * 0.7)
+        ..color = Colors.white
+            .withOpacity(bubble.opacity * 0.8) // เปลี่ยนเป็นสีขาว
         ..style = PaintingStyle.fill;
 
       canvas.drawCircle(
         bubblePosition - Offset(bubble.radius * 0.3, bubble.radius * 0.3),
-        bubble.radius * 0.3,
+        bubble.radius * 0.4, // ขนาดใหญ่ขึ้นเล็กน้อย
         highlightPaint,
       );
+
+      // เพิ่มขอบให้ฟองสบู่เพื่อให้เห็นชัดเจนขึ้น
+      final borderPaint = Paint()
+        ..color = Colors.black.withOpacity(bubble.opacity * 0.2)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
+      canvas.drawCircle(bubblePosition, bubble.radius, borderPaint);
     }
   }
 
