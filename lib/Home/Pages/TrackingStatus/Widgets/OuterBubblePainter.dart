@@ -14,10 +14,10 @@ class OuterBubblePainter extends CustomPainter {
     AppColors.mainButton,
     AppColors.iconSelect,
     AppColors.darkButton,
-    AppColors.error,
-    AppColors.warning,
-    AppColors.borderColor,
-    AppColors.iconUnselect,
+    // AppColors.error,
+    // AppColors.warning,
+    // AppColors.borderColor,
+    // AppColors.iconUnselect,
     AppColors.backgroundColor,
   ];
 
@@ -37,10 +37,8 @@ class OuterBubblePainter extends CustomPainter {
         center.dy + sin(currentAngle) * currentDistance,
       );
 
-      // เลือกสีจากลิสต์โดยใช้ index ของฟอง mod ด้วยจำนวนสี
       final bubbleColor = _bubbleColors[i % _bubbleColors.length];
 
-      // เพิ่มเงาให้ฟองสบู่
       final shadowPaint = Paint()
         ..color = Colors.black.withOpacity(bubble.opacity * 0.3)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);

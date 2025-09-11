@@ -61,7 +61,7 @@ class _BubbleProgressCircleState extends State<BubbleProgressCircle>
 
   void _generateBubbles() {
     _bubbles.clear();
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 50; i++) {
       _bubbles.add(
         Bubble(
           x: _random.nextDouble(),
@@ -76,7 +76,7 @@ class _BubbleProgressCircleState extends State<BubbleProgressCircle>
 
   void _generateOuterBubbles() {
     _outerBubbles.clear();
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 20; i++) {
       _outerBubbles.add(
         OuterBubble(
           angle: _random.nextDouble() * 2 * pi,
