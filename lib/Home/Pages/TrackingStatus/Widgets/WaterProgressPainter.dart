@@ -93,9 +93,9 @@ class WaterProgressPainter extends CustomPainter {
               waveHeight *
               0.6;
 
-      if (bubblePixelY > waveAtBubble) {
+      if (bubblePixelY < waveAtBubble) {
         final bubblePaint = Paint()
-          ..color = AppColors.backgroundColor.withOpacity(bubble.opacity * 0.8)
+          ..color = AppColors.mainButton.withOpacity(bubble.opacity * 0.7)
           ..style = PaintingStyle.fill;
 
         final bubbleCenter = Offset(bubblePixelX, bubblePixelY);

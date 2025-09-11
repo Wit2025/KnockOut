@@ -19,15 +19,13 @@ class SpinningCirclePainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 2;
 
-    // วาดพื้นหลังวงกลม
     final backgroundPaint = Paint()
       ..color = backgroundColor
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius, backgroundPaint);
 
-    // วาดวงกลมหมุนแบบไล่สี (Arc)
-    final sweepAngle = 2.0 * pi * 0.7; // 70% ของวงกลม
+    final sweepAngle = 2.0 * pi * 0.7;
     final startAngle = animationValue * 2 * pi;
 
     final gradientPaint = Paint()
@@ -35,9 +33,9 @@ class SpinningCirclePainter extends CustomPainter {
         startAngle: startAngle,
         endAngle: startAngle + sweepAngle,
         colors: [
-          mainColor.withOpacity(0.3), // หางจาง
+          mainColor.withOpacity(0.3),
           mainColor, // กลาง
-          mainColor.withOpacity(0.8), // หัวเข้ม
+          mainColor.withOpacity(0.8),
         ],
         stops: const [0.0, 0.5, 1.0],
       ).createShader(Rect.fromCircle(center: center, radius: radius))
